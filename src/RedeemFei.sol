@@ -151,6 +151,7 @@ contract RedeemFei is IProposalGenericExecutor {
 
         if (DAI_FIXED_PRICE_PSM.getRedeemAmountOut(feiBalance) < minBalance) {
             // TODO figure out what to do with FEI if we cant redeem it
+            // for now it transfers the FEI back to the AAVE_MAINNET_RESERVE_FACTOR for another payload to deal with
             IERC20(FEI).transfer(AAVE_MAINNET_RESERVE_FACTOR, feiBalance);
         } else {
             // we can redeem directly from PSM
