@@ -114,6 +114,9 @@ interface IEcosystemReserveController {
     ) external;
 }
 
+event PsmRedeem();
+event notPsmRedeem();
+
 contract RedeemFei is IProposalGenericExecutor {
 
     address public constant FEI = 0x956F47F50A910163D8BF957Cf5846D573E7f87CA;
@@ -130,7 +133,7 @@ contract RedeemFei is IProposalGenericExecutor {
     ILendingPool public constant AAVE_LENDING_POOL = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
 
     function execute() external override {
-        uint256 aFeiBalance = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 aFeiBalance = 300_000 ether;
 
         AAVE_ECOSYSTEM_RESERVE_CONTROLLER.transfer(
             AAVE_MAINNET_RESERVE_FACTOR,
@@ -149,16 +152,9 @@ contract RedeemFei is IProposalGenericExecutor {
         // https://etherscan.io/address/0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2#readContract function 31. redeemFeeBasisPoints 
         uint256 minBalance = feiBalance - (feiBalance / 1000 * 3);
 
-        if (DAI_FIXED_PRICE_PSM.getRedeemAmountOut(feiBalance) < minBalance) {
-            // TODO figure out what to do with FEI if we cant redeem it
-            // for now it transfers the FEI back to the AAVE_MAINNET_RESERVE_FACTOR for another payload to deal with
-            IERC20(FEI).transfer(AAVE_MAINNET_RESERVE_FACTOR, feiBalance);
-        } else {
-            // we can redeem directly from PSM
-            IERC20(FEI).approve(address(DAI_FIXED_PRICE_PSM), feiBalance);
+        IERC20(FEI).approve(address(DAI_FIXED_PRICE_PSM), feiBalance);
 
-            // https://docs.tribedao.xyz/docs/protocol/Mechanism/PegStabilityModule
-            DAI_FIXED_PRICE_PSM.redeem(AAVE_MAINNET_RESERVE_FACTOR, feiBalance, minBalance);
-        }
+        // https://docs.tribedao.xyz/docs/protocol/Mechanism/PegStabilityModule
+        DAI_FIXED_PRICE_PSM.redeem(AAVE_MAINNET_RESERVE_FACTOR, feiBalance, minBalance);
     }
 }
