@@ -17,8 +17,8 @@ download :; ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY} cast etherscan-source -d src/
 rinkeby-download :; ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY} cast etherscan-source -c rinkeby -d src/etherscan/${address} ${address} 
 
 # deploy
-rinkeby-deploy :; forge script script/FeiRiskParamsUpdatePayload.s.sol:FeiRiskParamsUpdateDeployScript --rpc-url=${RINKEBY_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --via-ir
+rinkeby-deploy :; forge script script/RedeemFeiPayload.s.sol:RedeemFeiDeployScript --rpc-url=${RINKEBY_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --via-ir
 
-deploy :;  forge script script/FeiRiskParamsUpdatePayload.s.sol:FeiRiskParamsUpdateDeployScript --rpc-url=${ETH_RPC_URL} --ledger --sender 0xde30040413b26d7aa2b6fc4761d80eb35dcf97ad --broadcast --verify --via-ir
+deploy :;  forge script script/RedeemFeiPayload.s.sol:RedeemFeiDeployScript --rpc-url=${ETH_RPC_URL} --ledger --sender 0xde30040413b26d7aa2b6fc4761d80eb35dcf97ad --broadcast --verify --via-ir
 
-submit :;  forge script script/FeiRiskParamsUpdateSubmission.s.sol:FeiRiskParamsUpdateSubmitScript --rpc-url=${ETH_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --via-ir
+submit :;  forge script script/RedeemFeiSubmission.s.sol:FeiRedeemSubmitScript --rpc-url=${ETH_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --via-ir
