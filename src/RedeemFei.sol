@@ -23,12 +23,6 @@ interface IProposalGenericExecutor {
     function execute() external;
 }
 
-interface ILendingPoolConfigurator {
-    function freezeReserve(
-        address asset
-    ) external;
-}
-
 interface IFixedPricePSM {
     function redeem(
         address to,
@@ -39,6 +33,8 @@ interface IFixedPricePSM {
     function getRedeemAmountOut(
         uint256 amountFeiIn
     ) external view returns (uint256 amountTokenOut);
+
+    function redeemFeeBasisPoints() external view returns (uint256);
 }
 
 interface IERC20 {
@@ -114,9 +110,6 @@ interface IEcosystemReserveController {
     ) external;
 }
 
-event PsmRedeem();
-event notPsmRedeem();
-
 contract RedeemFei is IProposalGenericExecutor {
 
     address public constant FEI = 0x956F47F50A910163D8BF957Cf5846D573E7f87CA;
@@ -133,7 +126,7 @@ contract RedeemFei is IProposalGenericExecutor {
     ILendingPool public constant AAVE_LENDING_POOL = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
 
     function execute() external override {
-        uint256 aFeiBalance = 300_000 ether;
+        uint256 aFeiBalance = 300_000e18;
 
         AAVE_ECOSYSTEM_RESERVE_CONTROLLER.transfer(
             AAVE_MAINNET_RESERVE_FACTOR,
@@ -150,7 +143,7 @@ contract RedeemFei is IProposalGenericExecutor {
         // PSM hardcodes 1 DAI = 1 FEI & takes a 3 bps redeem fee
         // so we subtract a 3bps fee from our FEI balance
         // https://etherscan.io/address/0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2#readContract function 31. redeemFeeBasisPoints 
-        uint256 minBalance = feiBalance - (feiBalance / 1000 * 3);
+        uint256 minBalance = feiBalance - (feiBalance * DAI_FIXED_PRICE_PSM.redeemFeeBasisPoints() / 10_000);
 
         IERC20(FEI).approve(address(DAI_FIXED_PRICE_PSM), feiBalance);
 

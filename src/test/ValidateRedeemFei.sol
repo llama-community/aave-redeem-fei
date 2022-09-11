@@ -30,21 +30,22 @@ contract ValidationRedeemFei is Test {
     // can't be constant for some reason
     string internal MARKET_NAME = "AaveV2Ethereum";
 
-    function setUp() public {}
+    RedeemFei fei;
+
+    function setUp() public {
+        fei = new RedeemFei();
+    }
 
     /// @dev Uses an already deployed payload on the target network
     function testProposalPostPayload() public {
         /// deploy payload
-        RedeemFei fei = new RedeemFei();
         _testProposal(address(fei));
     }
 
     function _testProposal(address payload) internal {
 
-        uint256 aFeiBalance = 300_000 ether;
+        uint256 aFeiBalance = 300_000e18;
         uint256 daiBalanceBefore = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        ReserveConfig[] memory allConfigsBefore = AaveV2Helpers
-            ._getReservesConfigs(false, MARKET_NAME);
 
         address[] memory targets = new address[](1);
         targets[0] = payload;
@@ -73,20 +74,9 @@ contract ValidationRedeemFei is Test {
 
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
 
-        uint256 minBalance = aFeiBalance - (aFeiBalance / 1000 * 3);
+        uint256 minBalance = aFeiBalance - (aFeiBalance * 3 / 10_000);
         uint256 daiBalanceAfter = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        assertEq(daiBalanceAfter >= daiBalanceBefore + minBalance, true);
-
-        // TODO confirm we get the DAI
-
-        // ReserveConfig[] memory allConfigsAfter = AaveV2Helpers
-        //     ._getReservesConfigs(false, MARKET_NAME);
-
-        // ReserveConfig memory feiConfigBefore = AaveV2Helpers._findReserveConfig(allConfigsBefore, "FEI", true);
-        // ReserveConfig memory feiConfigAfter = AaveV2Helpers._findReserveConfig(allConfigsAfter, "FEI", true);
-
-        // require(!feiConfigBefore.isFrozen);
-        // require(feiConfigAfter.isFrozen);
+        assertEq(daiBalanceAfter, daiBalanceBefore + minBalance);
 
     }
 }

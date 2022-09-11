@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.11;
 
-import "forge-std/Test.sol";
 import "forge-std/Script.sol";
 
 import {AaveGovHelpers, IAaveGov} from "src/test/utils/AaveGovHelpers.sol";
 
-contract FeiRiskParamsUpdateSubmitScript is Script, Test {
+contract FeiRiskParamsUpdateSubmitScript is Script {
     // TODO these constants will change
     address internal constant DELEGATE_ADDRESS = 0xd2362DbB5Aa708Bc454Ce5C3F11050C016764fA6;
     address internal constant PAYLOAD = 0xD417d07c20e31F6e129fa68182054B641FbEC8Bd;
