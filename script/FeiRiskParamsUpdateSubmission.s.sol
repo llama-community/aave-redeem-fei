@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 
 import {AaveGovHelpers, IAaveGov} from "src/test/utils/AaveGovHelpers.sol";
 
-contract FeiRiskParamsUpdateSubmitScript is Script {
+contract FeiRedeemSubmitScript is Script {
     // TODO these constants will change
     address internal constant DELEGATE_ADDRESS = 0xd2362DbB5Aa708Bc454Ce5C3F11050C016764fA6;
     address internal constant PAYLOAD = 0xD417d07c20e31F6e129fa68182054B641FbEC8Bd;
