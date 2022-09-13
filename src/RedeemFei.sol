@@ -110,6 +110,12 @@ interface IEcosystemReserveController {
     ) external;
 }
 
+/**
+ * @author Llama
+ * @dev This proposal proposes redeeming $300,000 aFEI for FEI and then redeeming FEI for DAI via Tribe DAO’s DAI Peg Stability Module (PSM). 
+ * Governance Forum Post: https://governance.aave.com/t/arc-ethereum-v2-reserve-factor-afei-holding-update/9401
+ * Parameter snapshot: https://snapshot.org/#/aave.eth/proposal/0x88e896a245ffeda703e0b8f5494f3e66628be6e32a7243e3341b545c2972857f
+ */
 contract RedeemFei is IProposalGenericExecutor {
 
     address public constant FEI = 0x956F47F50A910163D8BF957Cf5846D573E7f87CA;
@@ -126,16 +132,16 @@ contract RedeemFei is IProposalGenericExecutor {
     ILendingPool public constant AAVE_LENDING_POOL = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
 
     function execute() external override {
-        uint256 aFeiBalance = 300_000e18;
+        uint256 aFeiAmount = 300_000e18;
 
         AAVE_ECOSYSTEM_RESERVE_CONTROLLER.transfer(
             AAVE_MAINNET_RESERVE_FACTOR,
             A_FEI,
             address(this),
-            aFeiBalance
+            aFeiAmount
         );
 
-        AAVE_LENDING_POOL.withdraw(FEI, aFeiBalance, address(this));
+        AAVE_LENDING_POOL.withdraw(FEI, aFeiAmount, address(this));
         
         uint256 feiBalance = IERC20(FEI).balanceOf(address(this));
 
