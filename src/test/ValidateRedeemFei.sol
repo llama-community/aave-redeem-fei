@@ -30,10 +30,10 @@ contract ValidationRedeemFei is Test {
     // can't be constant for some reason
     string internal MARKET_NAME = "AaveV2Ethereum";
 
-    RedeemFei fei;
+    RedeemFei public feiPayload;
 
     function setUp() public {
-        fei = new RedeemFei();
+        feiPayload = new RedeemFei();
     }
 
     function testProposalPostPayload() public {
@@ -43,7 +43,7 @@ contract ValidationRedeemFei is Test {
         uint256 aFeiBalanceBefore = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
 
         address[] memory targets = new address[](1);
-        targets[0] = address(fei);
+        targets[0] = address(feiPayload);
         uint256[] memory values = new uint256[](1);
         values[0] = 0;
         string[] memory signatures = new string[](1);
@@ -70,7 +70,7 @@ contract ValidationRedeemFei is Test {
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
 
         uint256 minBalance = aFeiAmount - (aFeiAmount * 3 / 10_000);
-        
+
         uint256 daiBalanceAfter = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         assertEq(daiBalanceAfter, daiBalanceBefore + minBalance);
         uint256 aFeiBalanceAfter = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
