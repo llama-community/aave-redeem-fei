@@ -112,7 +112,7 @@ interface IEcosystemReserveController {
 
 /**
  * @author Llama
- * @dev This proposal proposes redeeming $300,000 aFEI for FEI and then redeeming FEI for DAI via Tribe DAO’s DAI Peg Stability Module (PSM). 
+ * @dev This proposal proposes redeeming 300,000 aFEI for FEI and then redeeming FEI for DAI via Tribe DAO’s DAI Peg Stability Module (PSM). 
  * Governance Forum Post: https://governance.aave.com/t/arc-ethereum-v2-reserve-factor-afei-holding-update/9401
  * Parameter snapshot: https://snapshot.org/#/aave.eth/proposal/0x519f6ecb17b00eb9c2c175c586173b15cfa5199247903cda9ddab48763ddb035
  */
