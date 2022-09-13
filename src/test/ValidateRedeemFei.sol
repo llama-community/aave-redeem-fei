@@ -40,6 +40,7 @@ contract ValidationRedeemFei is Test {
 
         uint256 aFeiAmount = 300_000e18;
         uint256 daiBalanceBefore = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 aFeiBalanceBefore = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
 
         address[] memory targets = new address[](1);
         targets[0] = address(fei);
@@ -69,8 +70,10 @@ contract ValidationRedeemFei is Test {
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
 
         uint256 minBalance = aFeiAmount - (aFeiAmount * 3 / 10_000);
+        
         uint256 daiBalanceAfter = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         assertEq(daiBalanceAfter, daiBalanceBefore + minBalance);
-
+        uint256 aFeiBalanceAfter = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        assertEq(aFeiBalanceAfter, aFeiBalanceBefore - aFeiAmount);
     }
 }
