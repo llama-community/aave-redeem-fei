@@ -36,19 +36,13 @@ contract ValidationRedeemFei is Test {
         fei = new RedeemFei();
     }
 
-    /// @dev Uses an already deployed payload on the target network
     function testProposalPostPayload() public {
-        /// deploy payload
-        _testProposal(address(fei));
-    }
-
-    function _testProposal(address payload) internal {
 
         uint256 aFeiAmount = 300_000e18;
         uint256 daiBalanceBefore = IERC20(DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
 
         address[] memory targets = new address[](1);
-        targets[0] = payload;
+        targets[0] = address(fei);
         uint256[] memory values = new uint256[](1);
         values[0] = 0;
         string[] memory signatures = new string[](1);
