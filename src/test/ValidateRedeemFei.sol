@@ -58,13 +58,10 @@ contract ValidationRedeemFei is Test {
 
     function testProposalPostPayload() public {
 
-        uint256 aFeiAmount = IERC20(FEI).balanceOf(AAVE_LENDING_POOL);
-        uint256 aDaiBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        uint256 minBalance = aFeiAmount - (aFeiAmount * 3 / 10_000);
-        uint256 amountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiAmount);
-        emit log_named_uint("Amount of FEI in LendingPool", aFeiAmount);
-        emit log_named_uint("Max DAI Redeem from PSM after 3bps fee", minBalance);
-        emit log_named_uint("PSM expected output amount from FEI in LendingPool", amountOut);
+        uint256 aFeiPoolBalance = IERC20(FEI).balanceOf(AAVE_LENDING_POOL);
+        uint256 aDaiReserveBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 minBalance = aFeiPoolBalance - (aFeiPoolBalance * 3 / 10_000);
+        uint256 psmAmountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiPoolBalance);
 
         address[] memory targets = new address[](1);
         targets[0] = address(feiPayload);
@@ -92,14 +89,15 @@ contract ValidationRedeemFei is Test {
         );
 
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
-        uint256 aDaiBalanceAfter = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        emit log_named_uint("aDAI balance before", aDaiBalanceBefore);
-        emit log_named_uint("aDAI balance after", aDaiBalanceAfter);
-        emit log_named_uint("aFEI balance in Lending Pool", aFeiAmount);
-        emit log_named_uint("DAI redeem from PSM after 3 bps fees", minBalance);
-        emit log_named_uint("Difference between expected and real", aDaiBalanceAfter - (aDaiBalanceBefore + minBalance));
+        uint256 aDaiReserveBalanceAfer = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        emit log_named_uint("Amount of FEI in LendingPool", aFeiPoolBalance);
+        emit log_named_uint("Max DAI Redeem from PSM after 3bps fee -----------", minBalance);
+        emit log_named_uint("PSM expected output amount from FEI in LendingPool", psmAmountOut);
+        emit log_named_uint("aDAI balance before ----------------", aDaiReserveBalanceBefore);
+        emit log_named_uint("aDAI balance after -----------------", aDaiReserveBalanceAfer);
+        emit log_named_uint("Difference between expected and real", aDaiReserveBalanceAfer - (aDaiReserveBalanceBefore + minBalance));
 
-        //assertEq(aDaiBalanceAfter, aDaiBalanceBefore + minBalance - 1);
+        //assertEq(aDaiReserveBalanceAfer, aDaiReserveBalanceBefore + minBalance - 1);
 
     }
 }
