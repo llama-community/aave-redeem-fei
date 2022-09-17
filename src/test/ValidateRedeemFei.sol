@@ -48,12 +48,12 @@ contract ValidationRedeemFei is Test {
     // can't be constant for some reason
     string internal MARKET_NAME = "AaveV2Ethereum";
 
-    RedeemFei fei;
+    RedeemFei feiPayload;
     AFeiToDaiSwapper swapper;
 
     function setUp() public {
         swapper = new AFeiToDaiSwapper();
-        fei = new RedeemFei(address(swapper));
+        feiPayload = new RedeemFei(address(swapper));
     }
 
     function testProposalPostPayload() public {
@@ -62,9 +62,9 @@ contract ValidationRedeemFei is Test {
         uint256 aDaiBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         uint256 minBalance = aFeiAmount - (aFeiAmount * 3 / 10_000);
         uint256 amountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiAmount);
-        emit log_uint(aFeiAmount);
-        emit log_uint(minBalance);
-        emit log_uint(amountOut);
+        emit log_named_uint("Amount of FEI in LendingPool", aFeiAmount);
+        emit log_named_uint("Max DAI Redeem from PSM after 3bps fee", minBalance);
+        emit log_named_uint("PSM expected output amount from FEI in LendingPool", amountOut);
 
         address[] memory targets = new address[](1);
         targets[0] = address(feiPayload);
@@ -93,7 +93,12 @@ contract ValidationRedeemFei is Test {
 
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
         uint256 aDaiBalanceAfter = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        
+        emit log_named_uint("aDAI balance before", aDaiBalanceBefore);
+        emit log_named_uint("aDAI balance after", aDaiBalanceAfter);
+        emit log_named_uint("aFEI balance in Lending Pool", aFeiAmount);
+        emit log_named_uint("DAI redeem from PSM after 3 bps fees", minBalance);
+        emit log_named_uint("Difference between expected and real", aDaiBalanceAfter - (aDaiBalanceBefore + minBalance));
+
         //assertEq(aDaiBalanceAfter, aDaiBalanceBefore + minBalance - 1);
 
     }
