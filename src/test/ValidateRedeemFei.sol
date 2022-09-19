@@ -89,15 +89,15 @@ contract ValidationRedeemFei is Test {
         );
 
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
-        uint256 aDaiReserveBalanceAfer = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 aDaiReserveBalanceAfter = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         emit log_named_uint("Amount of FEI in LendingPool", aFeiPoolBalance);
         emit log_named_uint("Max DAI Redeem from PSM after 3bps fee -----------", minBalance);
         emit log_named_uint("PSM expected output amount from FEI in LendingPool", psmAmountOut);
         emit log_named_uint("aDAI balance before ----------------", aDaiReserveBalanceBefore);
-        emit log_named_uint("aDAI balance after -----------------", aDaiReserveBalanceAfer);
-        emit log_named_uint("Difference between expected and real", aDaiReserveBalanceAfer - (aDaiReserveBalanceBefore + minBalance));
+        emit log_named_uint("aDAI balance after -----------------", aDaiReserveBalanceAfter);
+        emit log_named_uint("Difference between expected and real", aDaiReserveBalanceAfter - (aDaiReserveBalanceBefore + minBalance));
 
-        //assertEq(aDaiReserveBalanceAfer, aDaiReserveBalanceBefore + minBalance - 1);
+        assertGe(aDaiReserveBalanceAfter, aDaiReserveBalanceBefore + minBalance);
 
     }
 }

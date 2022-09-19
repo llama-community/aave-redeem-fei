@@ -97,16 +97,16 @@ contract AFeiToDaiSwapper {
     }
 
     function swapAllAvailable() external {
-        uint256 aFeiAmount = IERC20(FEI).balanceOf(address(AAVE_LENDING_POOL));
+        uint256 redeemAmount = IERC20(FEI).balanceOf(address(AAVE_LENDING_POOL));
         
         uint256 aFeiReserveBalance = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        if (aFeiReserveBalance < aFeiAmount) {
-            aFeiAmount = aFeiReserveBalance;
+        if (aFeiReserveBalance < redeemAmount) {
+            redeemAmount = aFeiReserveBalance;
         }
 
-        IERC20(A_FEI).transferFrom(AAVE_MAINNET_RESERVE_FACTOR, address(this), aFeiAmount);
+        IERC20(A_FEI).transferFrom(AAVE_MAINNET_RESERVE_FACTOR, address(this), redeemAmount);
 
-        AAVE_LENDING_POOL.withdraw(FEI, aFeiAmount, address(this));
+        AAVE_LENDING_POOL.withdraw(FEI, redeemAmount, address(this));
         
         uint256 feiBalance = IERC20(FEI).balanceOf(address(this));
 
