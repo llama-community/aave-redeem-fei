@@ -97,6 +97,9 @@ contract ValidationRedeemFei is Test {
         emit log_named_uint("aDAI balance after -----------------", aDaiReserveBalanceAfter);
         emit log_named_uint("Difference between expected and real", aDaiReserveBalanceAfter - (aDaiReserveBalanceBefore + minBalance));
 
+
+        // AAVE Mainnet Reserve Factor gets some additional aTokens minted to it while redeeming
+        // see: https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/libraries/logic/ReserveLogic.sol#L265-L325
         assertGe(aDaiReserveBalanceAfter, aDaiReserveBalanceBefore + minBalance);
 
     }
