@@ -60,6 +60,7 @@ contract ValidationRedeemFei is Test {
 
         uint256 aFeiPoolBalance = IERC20(FEI).balanceOf(AAVE_LENDING_POOL);
         uint256 aDaiReserveBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 aFeiReserveBalanceBefore = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         uint256 minBalance = aFeiPoolBalance - (aFeiPoolBalance * 3 / 10_000);
         uint256 psmAmountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiPoolBalance);
 
@@ -90,6 +91,7 @@ contract ValidationRedeemFei is Test {
 
         AaveGovHelpers._passVote(vm, AAVE_WHALE, proposalId);
         uint256 aDaiReserveBalanceAfter = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
+        uint256 aFeiReserveBalanceAfter = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         emit log_named_uint("Amount of FEI in LendingPool", aFeiPoolBalance);
         emit log_named_uint("Max DAI Redeem from PSM after 3bps fee -----------", minBalance);
         emit log_named_uint("PSM expected output amount from FEI in LendingPool", psmAmountOut);
@@ -101,6 +103,9 @@ contract ValidationRedeemFei is Test {
         // AAVE Mainnet Reserve Factor gets some additional aTokens minted to it while redeeming
         // see: https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/libraries/logic/ReserveLogic.sol#L265-L325
         assertGe(aDaiReserveBalanceAfter, aDaiReserveBalanceBefore + minBalance);
+
+        // Compensating for +1/-1 precision issues when rounding, mainly on aTokens
+        assertApproxEqAbs(aFeiReserveBalanceAfter, aFeiReserveBalanceBefore - aFeiPoolBalance, 1);
 
     }
 }
