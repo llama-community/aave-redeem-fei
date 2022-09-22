@@ -11,7 +11,6 @@ To set up the project manually, run the following commands:
 ```sh
 $ git clone https://github.com/llama-community/aave-redeem-fei.git
 $ cd aave-redeem-fei/
-$ npm install
 $ forge install
 ```
 
