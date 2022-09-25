@@ -80,7 +80,7 @@ contract AFeiToDaiSwapper {
 
     IFixedPricePSM public constant DAI_FIXED_PRICE_PSM = IFixedPricePSM(0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2);
 
-    uint256 public constant MAX_BPS = 30;
+    uint256 public constant MAX_BPS = 50;
 
     constructor() {
         IERC20(DAI).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
