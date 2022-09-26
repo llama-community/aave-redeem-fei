@@ -103,9 +103,12 @@ contract AFeiToDaiSwapper {
 
         require(DAI_FIXED_PRICE_PSM.redeemFeeBasisPoints() <= MAX_BPS);
 
+        uint256 minBalance = feiBalance - (feiBalance * MAX_BPS / 10_000);
+        
         // https://docs.tribedao.xyz/docs/protocol/Mechanism/PegStabilityModule
-        // off by one error sometimes, so we just accept a 1 unit L
-        DAI_FIXED_PRICE_PSM.redeem(address(this), feiBalance, DAI_FIXED_PRICE_PSM.getRedeemAmountOut(feiBalance));
+        uint256 outBalance = DAI_FIXED_PRICE_PSM.redeem(address(this), feiBalance, minBalance);
+        
+        require(minBalance <= outBalance);
 
         AaveV2Ethereum.POOL.deposit(DAI, IERC20(DAI).balanceOf(address(this)), AaveV2Ethereum.COLLECTOR, 0);
     }
