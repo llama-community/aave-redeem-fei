@@ -58,11 +58,12 @@ contract AFeiToDaiSwapper {
     }
 
     function swapAllAvailable() external {
-        uint256 redeemAmount = IERC20(FEI).balanceOf(A_FEI);
+        uint256 redeemAmount = IERC20(A_FEI).balanceOf(AaveV2Ethereum.COLLECTOR);
 
-        uint256 aFeiReserveBalance = IERC20(A_FEI).balanceOf(AaveV2Ethereum.COLLECTOR);
-        if (aFeiReserveBalance < redeemAmount) {
-            redeemAmount = aFeiReserveBalance;
+        uint256 feiAvailableLiquidity = IERC20(FEI).balanceOf(A_FEI);
+
+        if (feiAvailableLiquidity < redeemAmount) {
+            redeemAmount = feiAvailableLiquidity;
         }
 
         IERC20(A_FEI).transferFrom(AaveV2Ethereum.COLLECTOR, address(this), redeemAmount);
