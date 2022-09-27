@@ -53,7 +53,7 @@ contract ValidationRedeemFei is Test {
         uint256 aFeiBalance = IERC20(FEI).balanceOf(A_FEI);
         uint256 aDaiReserveBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         uint256 aFeiReserveBalanceBefore = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        uint256 minBalance = aFeiBalance - (aFeiBalance * 3 / 10_000);
+        uint256 minBalance = aFeiBalance - (aFeiBalance * swapper.MAX_BPS / 10_000);
         uint256 psmAmountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiBalance);
 
         address[] memory targets = new address[](1);
