@@ -48,9 +48,7 @@ contract AFeiToDaiSwapper {
 
     address public constant A_FEI = 0x683923dB55Fead99A79Fa01A27EeC3cB19679cC3;
 
-    IFixedPricePSM public constant DAI_FIXED_PRICE_PSM = IFixedPricePSM(0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2);
-
-    uint256 public constant MAX_BPS = 50;
+    IFixedPricePSM public constant DAI_FIXED_PRICE_PSM = IFixedPricePSM(0x7842186CDd11270C4Af8C0A99A5E0589c7F249ce);
 
     constructor() {
         IERC20(DAI).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
@@ -71,14 +69,12 @@ contract AFeiToDaiSwapper {
         AaveV2Ethereum.POOL.withdraw(FEI, redeemAmount, address(this));
 
         uint256 feiBalance = IERC20(FEI).balanceOf(address(this));
-
-        uint256 minBalance = feiBalance - (feiBalance * MAX_BPS / 10_000);
         
         // https://docs.tribedao.xyz/docs/protocol/Mechanism/PegStabilityModule
-        uint256 outBalance = DAI_FIXED_PRICE_PSM.redeem(address(this), feiBalance, minBalance);
-        
-        require(minBalance <= outBalance, 'BALANCE_LESS_THEN_MINIMUM');
+        // new PSM always redeems FEI<->DAI 1:1 without any fees
+        DAI_FIXED_PRICE_PSM.redeem(address(this), feiBalance, feiBalance);
 
-        AaveV2Ethereum.POOL.deposit(DAI, IERC20(DAI).balanceOf(address(this)), AaveV2Ethereum.COLLECTOR, 0);
+
+        AaveV2Ethereum.POOL.deposit(DAI, feiBalance, AaveV2Ethereum.COLLECTOR, 0);
     }
 }

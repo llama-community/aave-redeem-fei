@@ -30,6 +30,8 @@ contract ValidationRedeemFei is Test {
 
     address public constant A_FEI = 0x683923dB55Fead99A79Fa01A27EeC3cB19679cC3;
 
+    address public constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+
     address public constant A_DAI = 0x028171bCA77440897B824Ca71D1c56caC55b68A3;
 
     address public constant AAVE_MAINNET_RESERVE_FACTOR = 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c;
@@ -53,7 +55,7 @@ contract ValidationRedeemFei is Test {
         uint256 aFeiBalance = IERC20(FEI).balanceOf(A_FEI);
         uint256 aDaiReserveBalanceBefore = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         uint256 aFeiReserveBalanceBefore = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
-        uint256 minBalance = aFeiBalance - (aFeiBalance * swapper.MAX_BPS() / 10_000);
+        uint256 minBalance = aFeiBalance;
         uint256 psmAmountOut = DAI_FIXED_PRICE_PSM.getRedeemAmountOut(aFeiBalance);
 
         address[] memory targets = new address[](1);
@@ -85,7 +87,7 @@ contract ValidationRedeemFei is Test {
         uint256 aDaiReserveBalanceAfter = IERC20(A_DAI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         uint256 aFeiReserveBalanceAfter = IERC20(A_FEI).balanceOf(AAVE_MAINNET_RESERVE_FACTOR);
         emit log_named_uint("Amount of FEI in LendingPool", aFeiBalance);
-        emit log_named_uint("Max DAI Redeem from PSM after 3bps fee -----------", minBalance);
+        emit log_named_uint("Max DAI Redeem from PSM after 0bps fee -----------", minBalance);
         emit log_named_uint("PSM expected output amount from FEI in LendingPool", psmAmountOut);
         emit log_named_uint("aDAI balance before ----------------", aDaiReserveBalanceBefore);
         emit log_named_uint("aDAI balance after -----------------", aDaiReserveBalanceAfter);
@@ -101,5 +103,11 @@ contract ValidationRedeemFei is Test {
         assertApproxEqAbs(aFeiReserveBalanceAfter, aFeiReserveBalanceBefore - aFeiBalance, 1);
 
         assertEq(IERC20(FEI).balanceOf(A_FEI), 0);
+
+        // Confirm swapper never has any balance left over
+        assertEq(IERC20(A_FEI).balanceOf(address(swapper)), 0);
+        assertEq(IERC20(FEI).balanceOf(address(swapper)), 0);
+        assertEq(IERC20(DAI).balanceOf(address(swapper)), 0);
+        
     }
 }
