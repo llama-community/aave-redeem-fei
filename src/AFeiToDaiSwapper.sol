@@ -39,7 +39,7 @@ interface IERC20 {
  * @author Llama
  * @dev This contract redeems all available aFEI in the Lending Pool for FEI, redeems FEI for DAI via Tribe DAO’s DAI Peg Stability Module (PSM), and deposits all DAI on Aave on behalf of AAVE_MAINNET_RESERVE_FACTOR.
  * Governance Forum Post: https://governance.aave.com/t/arc-ethereum-v2-reserve-factor-afei-holding-update/9401
- * Parameter snapshot: https://snapshot.org/#/aave.eth/proposal/0x88e896a245ffeda703e0b8f5494f3e66628be6e32a7243e3341b545c2972857f
+ * Parameter snapshot: https://snapshot.org/#/aave.eth/proposal/0x519f6ecb17b00eb9c2c175c586173b15cfa5199247903cda9ddab48763ddb035
  */
 contract AFeiToDaiSwapper {
     address public constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
