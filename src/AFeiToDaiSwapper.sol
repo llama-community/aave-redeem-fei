@@ -88,7 +88,7 @@ contract AFeiToDaiSwapper {
     }
 
     function swapAllAvailable() external {
-        uint256 redeemAmount = IERC20(FEI).balanceOf(address(AaveV2Ethereum.POOL));
+        uint256 redeemAmount = IERC20(FEI).balanceOf(A_FEI);
 
         uint256 aFeiReserveBalance = IERC20(A_FEI).balanceOf(AaveV2Ethereum.COLLECTOR);
         if (aFeiReserveBalance < redeemAmount) {
@@ -101,14 +101,12 @@ contract AFeiToDaiSwapper {
 
         uint256 feiBalance = IERC20(FEI).balanceOf(address(this));
 
-        require(DAI_FIXED_PRICE_PSM.redeemFeeBasisPoints() <= MAX_BPS);
-
         uint256 minBalance = feiBalance - (feiBalance * MAX_BPS / 10_000);
         
         // https://docs.tribedao.xyz/docs/protocol/Mechanism/PegStabilityModule
         uint256 outBalance = DAI_FIXED_PRICE_PSM.redeem(address(this), feiBalance, minBalance);
         
-        require(minBalance <= outBalance);
+        require(minBalance <= outBalance, 'BALANCE_LESS_THEN_MINIMUM');
 
         AaveV2Ethereum.POOL.deposit(DAI, IERC20(DAI).balanceOf(address(this)), AaveV2Ethereum.COLLECTOR, 0);
     }
